@@ -116,3 +116,8 @@ type ginConf struct {
 	SSlCerFile string `json:"ssl_cer_file"` // 证书路径
 	SSlKeyFile string `json:"ssl_key_file"` // 证书key路径
 }
+
+type mongoConf struct {
+	MongoUrl    string `json:"mongo_url"`     // mongo url
+	MongoDBName string `json:"mongo_db_name"` // mongo db name
+}
