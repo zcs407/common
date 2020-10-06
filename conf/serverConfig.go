@@ -19,7 +19,8 @@ const (
 
 // 网关模块配置
 type GatewayConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -40,7 +41,8 @@ type ServeConf struct {
 
 // 用户模块配置
 type AccountConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -53,7 +55,8 @@ type AccountConf struct {
 
 // 消息模块配置
 type MsgConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -66,7 +69,8 @@ type MsgConf struct {
 
 // 广场模块配置
 type PlazaConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -79,7 +83,8 @@ type PlazaConf struct {
 
 // 清理模块配置
 type CleanerConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -92,7 +97,8 @@ type CleanerConf struct {
 
 // 文件模块配置
 type FileConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
@@ -105,7 +111,8 @@ type FileConf struct {
 
 // 后台模块配置
 type CMSConf struct {
-	DBUrl           string `json:"db_addr"`           // sql型数据库url
+	DBHost          string `json:"db_host"`           // sql型数据库ip
+	DBPort          string `json:"db_port"`           // sql型数据库port
 	DBUser          string `json:"db_user"`           // sql型数据库用户
 	DBPwd           string `json:"db_pwd"`            // sql型数据库密码
 	RedisClusterUrl string `json:"redis_cluster_url"` // redis集群地址
