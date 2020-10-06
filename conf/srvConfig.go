@@ -27,14 +27,15 @@ type GatewayConf struct {
 	RedisClusterPwd string `json:"redis_cluster_pwd"` // redis密码
 	NatsUrl         string `json:"nats_url"`          // nats的url
 	NatsPwd         string `json:"nats_pwd"`          // nats的密码
-	ESUrl           string `json:"es_url"`            // Elasticsearch的url
-	ESPwd           string `json:"es_pwd"`            // Elasticsearch的连接密码
+	ESUrl           string `json:"es_url"`            // ElasticSearch的url
+	ESPwd           string `json:"es_pwd"`            // ElasticSearch的连接密码
 }
 
 // 服务模块的配置
 type ServeConf struct {
 	natsConf
 	redisConf
+	ginConf
 }
 
 // 用户模块配置
@@ -43,6 +44,7 @@ type AccountConf struct {
 	natsConf
 	redisConf
 	esConf
+	ginConf
 }
 
 // 消息模块配置
@@ -51,6 +53,7 @@ type MsgConf struct {
 	natsConf
 	redisConf
 	esConf
+	ginConf
 }
 
 // 广场模块配置
@@ -59,24 +62,28 @@ type PlazaConf struct {
 	natsConf
 	redisConf
 	esConf
+	ginConf
 }
 
 // 清理模块配置
 type CleanerConf struct {
 	redisConf
 	natsConf
+	ginConf
 }
 
 // 文件模块配置
 type FileConf struct {
 	sqlDb
 	redisConf
+	ginConf
 }
 
 // 后台模块配置
 type CMSConf struct {
 	sqlDb
 	redisConf
+	ginConf
 }
 
 type redisConf struct {
@@ -99,7 +106,13 @@ type sqlDb struct {
 }
 
 type esConf struct {
-	ESUrl  string `json:"es_url"`  // Elasticsearch的url
-	ESUser string `json:"es_user"` // Elasticsearch的user
-	ESPwd  string `json:"es_pwd"`  // Elasticsearch的连接密码
+	ESUrl  string `json:"es_url"`  // ElasticSearch的url
+	ESUser string `json:"es_user"` // ElasticSearch的user
+	ESPwd  string `json:"es_pwd"`  // ElasticSearch的连接密码
+}
+
+type ginConf struct {
+	HostUrl    string `json:"host_url"`     // ip:port
+	SSlCerFile string `json:"ssl_cer_file"` // 证书路径
+	SSlKeyFile string `json:"ssl_key_file"` // 证书key路径
 }
