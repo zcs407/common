@@ -9,7 +9,7 @@ type NatsClient struct {
 }
 
 // 创建etcd的客户端
-func NewNatsClient(natsUrl string) (NC *NatsClient, err error) {
+func NewNatsClient(natsUrl, pwd string) (NC *NatsClient, err error) {
 	NC = &NatsClient{}
 	NC.Conn, err = nats.Connect(natsUrl)
 	return

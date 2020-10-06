@@ -11,9 +11,9 @@ type DBClient struct {
 	Engine *xorm.Engine
 }
 
-func NewDBClient(user, host, pwd, dbName string) (db *DBClient, err error) {
+func NewDBClient(user, host, port, pwd, dbName string) (db *DBClient, err error) {
 	db = &DBClient{}
-	dataSourceName := fmt.Sprintf("%s:%s@%s/%s?charset=utf8", user, pwd, host, dbName)
+	dataSourceName := fmt.Sprintf("%s:%s@%s:%s/%s?charset=utf8", user, pwd, host, port, dbName)
 	db.Engine, err = xorm.NewEngine("mysql", dataSourceName)
 	err = db.Engine.Ping()
 	return
