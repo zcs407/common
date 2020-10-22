@@ -21,6 +21,7 @@ require (
 	github.com/nats-io/nkeys v0.2.0 // indirect
 	github.com/olivere/elastic/v7 v7.0.20 // indirect
 	github.com/pingcap/tidb v2.0.11+incompatible // indirect
+	github.com/rs/zerolog v1.20.0
 	go.etcd.io/etcd v3.3.25+incompatible // indirect
 	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
