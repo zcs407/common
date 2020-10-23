@@ -36,6 +36,7 @@ type ServeConf struct {
 	natsConf
 	redisConf
 	ginConf
+	logConf
 }
 
 // 用户模块配置
@@ -45,6 +46,7 @@ type AccountConf struct {
 	redisConf
 	esConf
 	ginConf
+	logConf
 }
 
 // 消息模块配置
@@ -54,6 +56,7 @@ type MsgConf struct {
 	redisConf
 	esConf
 	ginConf
+	logConf
 }
 
 // 广场模块配置
@@ -63,6 +66,7 @@ type PlazaConf struct {
 	redisConf
 	esConf
 	ginConf
+	logConf
 }
 
 // 清理模块配置
@@ -70,6 +74,7 @@ type CleanerConf struct {
 	redisConf
 	natsConf
 	ginConf
+	logConf
 }
 
 // 文件模块配置
@@ -77,6 +82,7 @@ type FileConf struct {
 	sqlDb
 	redisConf
 	ginConf
+	logConf
 }
 
 // 后台模块配置
@@ -84,6 +90,7 @@ type CMSConf struct {
 	sqlDb
 	redisConf
 	ginConf
+	logConf
 }
 
 type redisConf struct {
@@ -120,4 +127,11 @@ type ginConf struct {
 type mongoConf struct {
 	MongoUrl    string `json:"mongo_url"`     // mongo url
 	MongoDBName string `json:"mongo_db_name"` // mongo db name
+}
+
+type logConf struct {
+	LogServiceName string `json:"log_service_name"` // 服务名称
+	LogStdoutType  int    `json:"log_stdout_type"`  // 输出类型 0:终端 1:文件 2:ES
+	LogPath        string `json:"log_path"`         // 日志路径
+	Level          string `json:"level"`            // 日志级别
 }

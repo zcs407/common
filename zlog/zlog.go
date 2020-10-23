@@ -9,13 +9,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gin-gonic/gin"
+
 	"github.com/rs/zerolog"
 )
 
 /*
 time 时间 -
 hostname 主机名 -
-pid 程序pid
+pid 程序pid -
 connId 连接id
 uid 用户id
 token 用户token
@@ -32,7 +34,7 @@ var (
 	pid      = 0
 	service  = ""
 	hostname = ""
-	stdout   = 0
+	stdout   = stdoutToTerminal
 	logsMap  sync.Map
 
 	//
@@ -40,6 +42,20 @@ var (
 	centerDot = []byte("·")
 	dot       = []byte(".")
 	slash     = []byte("/")
+)
+
+const (
+	// 日志输出类型
+	stdoutToTerminal = 0 // 终端
+	stdoutToFile     = 1 // 文件
+	stdoutToES       = 2 // elasticSearch
+
+	// 日志级别
+
+	// 日志前缀
+	LogInfoSuffix = ".info.log"
+	LogErrSuffix  = ".error.log"
+	LogWarnSuffix = ".warn.log"
 )
 
 // LogT :
@@ -72,14 +88,18 @@ func InitLog(srcName, dir string, stdType, level int) (err error) {
 
 // 日志级别分别创建日志句柄 fileTail 日志类型的后缀名
 func newLog(fileTail string) *zerolog.Logger {
-	if stdout == 0 {
+	switch stdout {
+	case stdoutToTerminal:
 		logger := zerolog.New(os.Stdout).With().Time("time", time.Now().UTC()).Logger()
 		return &logger
+	case stdoutToFile:
+		file := newFile(fileTail)
+		logger := zerolog.New(file).With().Time("time", time.Now().UTC()).Caller().Logger().Output(file)
+		return &logger
+	case stdoutToES:
 	}
 
-	file := newFile(fileTail)
-	logger := zerolog.New(file).With().Time("time", time.Now().UTC()).Caller().Logger().Output(file)
-
+	logger := zerolog.New(os.Stdout).With().Time("time", time.Now().UTC()).Logger()
 	return &logger
 }
 
@@ -115,7 +135,7 @@ func newFile(fileTail string) *os.File {
 func Err(err error, msg string) {
 	pc, filePath, line, _ := runtime.Caller(1)
 	caller := filePath + ":" + strconv.Itoa(line)
-	newLog("").Error().Err(err).
+	newLog(LogErrSuffix).Error().Err(err).
 		Str("service", service).
 		Str("pid", strconv.Itoa(pid)).
 		Str("func", getFuncName(pc)).
@@ -123,24 +143,77 @@ func Err(err error, msg string) {
 		Msg(msg)
 }
 
+// 可自定义添加字段和描述
+func ErrWithStr(err error) *zerolog.Event {
+	pc, filePath, line, _ := runtime.Caller(1)
+	caller := filePath + ":" + strconv.Itoa(line)
+	return newLog(LogErrSuffix).Error().Err(err).
+		Str("service", service).
+		Str("pid", strconv.Itoa(pid)).
+		Str("func", getFuncName(pc)).
+		Str("caller", caller)
+}
+
 func Warn(msg string) {
 	pc, filePath, line, _ := runtime.Caller(1)
 	caller := filePath + ":" + strconv.Itoa(line)
-	newLog("").Warn().
+	newLog(LogWarnSuffix).Warn().
 		Str("service", service).
 		Str("pid", strconv.Itoa(pid)).
 		Str("func", getFuncName(pc)).
 		Str("caller", caller).Msg(msg)
 }
 
+func WarnWithStr() *zerolog.Event {
+	pc, filePath, line, _ := runtime.Caller(1)
+	caller := filePath + ":" + strconv.Itoa(line)
+	return newLog(LogWarnSuffix).Warn().
+		Str("service", service).
+		Str("pid", strconv.Itoa(pid)).
+		Str("func", getFuncName(pc)).
+		Str("caller", caller)
+}
+
 func Info(msg string) {
 	pc, filePath, line, _ := runtime.Caller(1)
 	caller := filePath + ":" + strconv.Itoa(line)
-	newLog("").Info().
+	newLog(LogInfoSuffix).Info().
 		Str("service", service).
 		Str("pid", strconv.Itoa(pid)).
 		Str("func", getFuncName(pc)).
 		Str("caller", caller).Msg(msg)
+}
+
+func InfoWithStr() *zerolog.Event {
+	pc, filePath, line, _ := runtime.Caller(1)
+	caller := filePath + ":" + strconv.Itoa(line)
+	return newLog(LogInfoSuffix).Info().
+		Str("service", service).
+		Str("pid", strconv.Itoa(pid)).
+		Str("func", getFuncName(pc)).
+		Str("caller", caller)
+}
+
+func ginRequest(ip, uri, method, state, latencyTime string, err error) {
+	newLog(LogInfoSuffix).Info().
+		Str("client_ip", ip).
+		Str("uri", uri).
+		Str("method", method).
+		Str("status", state).
+		Str("latency_time", latencyTime).
+		Err(err).Send()
+}
+
+func GinLog() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		startTime := time.Now()
+		// 处理请求
+		c.Next()
+		// 执行时间
+		latencyTime := time.Now().Sub(startTime).String()
+		ginRequest(c.ClientIP(), c.Request.RequestURI, c.Request.Method,
+			strconv.Itoa(c.Writer.Status()), latencyTime, c.Err())
+	}
 }
 
 // 还原函数名称
