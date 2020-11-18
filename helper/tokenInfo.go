@@ -2,8 +2,9 @@ package helper
 
 import (
 	"errors"
-	"github.com/dgrijalva/jwt-go"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 )
 
 var (
@@ -31,7 +32,7 @@ func NewJWT() *JWTInfo {
 
 // 创建token
 func (j *JWTInfo) TokenCreate(tokenInfo CustomClaims) (string, error) {
-	t := jwt.NewWithClaims(jwt.SigningMethodES256, tokenInfo)
+	t := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenInfo)
 	return t.SignedString(j.SignKey)
 }
 
