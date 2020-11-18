@@ -22,10 +22,8 @@ const (
 	errCheckFuncSubscribe              = "Subscribe"
 	errCheckFuncQueueSubscribe         = "QueueSubscribe"
 	errcheckFuncChanSubscribe          = "ChanSubscribe"
-	errcheckFuncChanChanQueueSubscribe = "ChanQueueSubscribe"
+	errcheckFuncChanChanQueueSubscribe = "ChanQueueSubscibe"
 )
-
-var json = jsoniter.ConfigCompatibleWithStandardLibrary
 
 // 创建etcd的客户端
 func NewNatsClient(natsUrl, pwd string) (NC *NatsClient, err error) {
@@ -50,6 +48,7 @@ func (n *NatsClient) Close() {
 
 // 发布消息到nats
 func (n *NatsClient) Publish(subj string, msg interface{}) {
+	json := jsoniter.ConfigCompatibleWithStandardLibrary
 	data, err := json.Marshal(&msg)
 	if !n.checkErr("Publish", subj, "", err) {
 		return
