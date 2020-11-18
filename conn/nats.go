@@ -36,10 +36,10 @@ func NewNatsClient(natsUrl, pwd string) (NC *NatsClient, err error) {
 		nats.MaxReconnects(maxReconnects),
 		nats.ReconnectWait(reconWaitTime),
 		nats.ClosedHandler(func(nc *nats.Conn) {
-			// TODO log
+			zlog.Info("close nats connect")
 		}),
 		nats.ErrorHandler(func(conn *nats.Conn, subscription *nats.Subscription, e error) {
-			// TODO log
+			zlog.Err(err, "err handler")
 		}))
 	return
 }
@@ -51,8 +51,7 @@ func (n *NatsClient) Close() {
 // 发布消息到nats
 func (n *NatsClient) Publish(subj string, msg interface{}) {
 	data, err := json.Marshal(&msg)
-	if err != nil {
-		n.checkErr("Publish", subj, "", err)
+	if !n.checkErr("Publish", subj, "", err) {
 		return
 	}
 	err = n.Conn.Publish(subj, data)
@@ -79,7 +78,10 @@ func (n *NatsClient) QueueSubscribe(subj, queue string, msgHandle func(data []by
 func (n *NatsClient) ChanSubscribe(subj string, msgHandle func(data []byte)) {
 	ch := make(chan *nats.Msg, 1024)
 	_, err := n.Conn.ChanSubscribe(subj, ch)
-	n.checkErr(errcheckFuncChanSubscribe, subj, "", err)
+	if !n.checkErr(errcheckFuncChanSubscribe, subj, "", err) {
+		return
+	}
+
 	for k := range ch {
 		msgHandle(k.Data)
 	}
@@ -89,7 +91,9 @@ func (n *NatsClient) ChanSubscribe(subj string, msgHandle func(data []byte)) {
 func (n *NatsClient) ChanQueueSubscribe(subj, queue string, msgHandle func(data []byte)) {
 	ch := make(chan *nats.Msg, 1024)
 	_, err := n.Conn.ChanQueueSubscribe(subj, queue, ch)
-	n.checkErr(errcheckFuncChanChanQueueSubscribe, subj, queue, err)
+	if !n.checkErr(errcheckFuncChanSubscribe, subj, queue, err) {
+		return
+	}
 	for k := range ch {
 		msgHandle(k.Data)
 	}
@@ -97,15 +101,17 @@ func (n *NatsClient) ChanQueueSubscribe(subj, queue string, msgHandle func(data 
 }
 
 // 检查错误
-func (n *NatsClient) checkErr(funcName, subj, queue string, err error) {
+func (n *NatsClient) checkErr(funcName, subj, queue string, err error) bool {
 	if err != nil {
 		switch funcName {
 		case errCheckFuncPublish:
-			zlog.ErrWithStr(err).Str("subj", subj).Msg("nats 发布失败")
+			zlog.ErrWithStrForErrCheck(err).Str("subj", subj).Msg("nats 发布失败")
 		case errCheckFuncSubscribe, errCheckFuncQueueSubscribe, errcheckFuncChanSubscribe,
 			errcheckFuncChanChanQueueSubscribe:
-			zlog.ErrWithStr(err).Str("subj", subj).Str("queue", queue).Msg("nats 订阅失败")
+			zlog.ErrWithStrForErrCheck(err).Str("subj", subj).Str("queue", queue).Msg("nats 订阅失败")
 		default:
 		}
+		return false
 	}
+	return true
 }

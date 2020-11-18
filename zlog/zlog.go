@@ -155,6 +155,29 @@ func ErrWithStr(err error) *zerolog.Event {
 		Str("caller", caller)
 }
 
+// 打印错误级别日志
+func ErrForErrCheck(err error, msg string) {
+	pc, filePath, line, _ := runtime.Caller(2)
+	caller := filePath + ":" + strconv.Itoa(line)
+	newLog(LogErrSuffix).Error().Err(err).
+		Str("service", service).
+		Str("pid", strconv.Itoa(pid)).
+		Str("func", getFuncName(pc)).
+		Str("caller", caller).
+		Msg(msg)
+}
+
+// 可自定义添加字段和描述
+func ErrWithStrForErrCheck(err error) *zerolog.Event {
+	pc, filePath, line, _ := runtime.Caller(2)
+	caller := filePath + ":" + strconv.Itoa(line)
+	return newLog(LogErrSuffix).Error().Err(err).
+		Str("service", service).
+		Str("pid", strconv.Itoa(pid)).
+		Str("func", getFuncName(pc)).
+		Str("caller", caller)
+}
+
 func Warn(msg string) {
 	pc, filePath, line, _ := runtime.Caller(1)
 	caller := filePath + ":" + strconv.Itoa(line)
