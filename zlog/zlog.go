@@ -56,6 +56,7 @@ const (
 	LogInfoSuffix = ".info.log"
 	LogErrSuffix  = ".error.log"
 	LogWarnSuffix = ".warn.log"
+	LogGinAccess  = ".ginAccess.log"
 )
 
 // LogT :
@@ -194,9 +195,10 @@ func InfoWithStr() *zerolog.Event {
 		Str("caller", caller)
 }
 
-func ginRequest(ip, uri, method, state, latencyTime string, err error) {
-	newLog(LogInfoSuffix).Info().
-		Str("client_ip", ip).
+func ginRequest(clientIp, remoteAddr, uri, method, state, latencyTime string, err error) {
+	newLog(LogGinAccess).Info().
+		Str("client_ip", clientIp).
+		Str("remote_addr", remoteAddr).
 		Str("uri", uri).
 		Str("method", method).
 		Str("status", state).
@@ -211,7 +213,7 @@ func GinLog() gin.HandlerFunc {
 		c.Next()
 		// 执行时间
 		latencyTime := time.Now().Sub(startTime).String()
-		ginRequest(c.ClientIP(), c.Request.RequestURI, c.Request.Method,
+		ginRequest(c.ClientIP(), c.Request.RemoteAddr, c.Request.RequestURI, c.Request.Method,
 			strconv.Itoa(c.Writer.Status()), latencyTime, c.Err())
 	}
 }
