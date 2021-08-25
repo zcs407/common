@@ -27,7 +27,8 @@ func NewEtcdClient(etcdNodes []string, user, pwd string) (EC *EtcdClient, err er
 
 // 解析etcd内的value
 func (e *EtcdClient) Parse(key string, v interface{}) error {
-	ctx, _ := context.WithTimeout(context.Background(), 3*time.Second)
+	ctx, cancle := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancle()
 	result, err := e.Conn.Get(ctx, key)
 	if err != nil {
 		return err

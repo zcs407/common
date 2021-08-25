@@ -12,6 +12,7 @@ require (
 	github.com/gin-gonic/gin v1.6.3 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/go-redis/redis/v7 v7.4.0 // indirect
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/go-xorm/xorm v0.7.9 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/protobuf v1.4.3 // indirect
@@ -28,7 +29,7 @@ require (
 	github.com/pingcap/tidb v2.0.11+incompatible // indirect
 	github.com/rs/zerolog v1.20.0
 	github.com/ugorji/go v1.1.13 // indirect
-	go.etcd.io/etcd v3.3.25+incompatible // indirect
+	go.etcd.io/etcd v3.3.25+incompatible
 	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
